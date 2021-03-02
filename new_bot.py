@@ -1,4 +1,5 @@
 import discord
+import random
 from discord import Member
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -12,24 +13,21 @@ bot = commands.Bot(command_prefix=prefix)
 @bot.event
 async def on_ready():
     print("Everything's all ready to go")
-    await bot.change_presence(activity = discord.Game(name = 'Your mom'))
+    await bot.change_presence(activity = discord.Game(name = 'your favoruite game'))
     for guild in bot.guilds:
         print(guild)
             
     print(
-            f'-----------------------'
-            f'{bot.user} is connected to the follwing guild:\n'
+            f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})\n'
-            )
+            f'{bot.user.name} has connected to discord')
 
     members = '\n - '.join([member.name for member in guild.members])
     print(f'Guild Members:\n - {members}')
 
-'''
-@bot.event
-async def on_message(message):
-    print("The msgs content was:", message.content)
-'''
+    guild = discord.utils.get(bot.guilds, name='Chicken')
+    print(guild.name)
+
 @bot.command(name='server')
 async def fetchServerInfo(context):
     guild = context.guild
@@ -58,5 +56,12 @@ async def foo(ctx, arg):
 async def getid(ctx, member: Member):
     await ctx.send(f"Your id is {ctx.author.id}")
     await ctx.send(f"{member.mention}'s id is {member.id}")
+
+@bot.command(name='quotey', help='spits out random quotes')
+async def quotes(ctx):
+    some_quotes_list = ['1','2','3'
+            ]
+    response = random.choice(some_quotes_list)
+    await ctx.send(response)
 
 bot.run(os.getenv('TOKEN'),bot=False)
