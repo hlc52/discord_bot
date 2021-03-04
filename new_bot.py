@@ -1,14 +1,18 @@
 import discord
 import random
 from discord import Member
+from discord import Color
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
+intents = discord.Intents.default()
+intents.members = True
+intents.presences = True #you need this bc the member cache won't update w/o it. the cache would only cache at start of bot and status won't update
 prefix = "$"
-bot = commands.Bot(command_prefix=prefix)
+bot = commands.Bot(command_prefix=prefix, intents=intents)
 
 @bot.event
 async def on_ready():
@@ -28,40 +32,53 @@ async def on_ready():
     guild = discord.utils.get(bot.guilds, name='Chicken')
     print(guild.name)
 
-@bot.command(name='server')
+@bot.command(name='server', help='get server stats')
 async def fetchServerInfo(context):
     guild = context.guild
-    await context.send(f'Server name:{guild.name}')
-    await context.send(f'Server size:{len(guild.members)}')
-    await context.send(f'Server name:{author.id}')
+    await context.send(
+            f'-----\n'
+            f'server name: {guild.name}\n'
+            f'server channels: {len(guild.channels)}\n'
+            f'server members: {guild.member_count}\n'
+)
+@bot.command(name='coreypic', help='fetch a pic of corey')
+async def corey_img(context):
+    await context.send(file = discord.File('corey.png'))
 
-@bot.command()
-async def ping(ctx):
-    '''
-    this text will be shown in the help command
-    '''
-    #get latency
-    latency = bot.latency
-    # send it to the user
-    await ctx.send(latency)
-
-@bot.command()
-async def foo(ctx, arg):
-    '''
-    this is the help message for foo
-    '''
-    await ctx.send(arg)
+@bot.command(name='coreyolive', help='check if corey is online')
+async def coreyStatus(ctx):
+    corey_id = 139598054373195776
+    #corey_id = 225359460812455936
+    
+    corey_member = ctx.guild.get_member(corey_id)
+    corey_stat = corey_member.status
+    result = ""
+    filename = ''
+    if str(corey_stat) == "offline":
+        result = "corey ded"
+        filename = "corey_slep.png"
+        color = Color.red()
+    else:
+        result = "!!!ALERT!!! COREY OLIVE"
+        filename = "corey_online.png"
+        color = Color.green()
+    embedVar = discord.Embed(title="COREY STATUS", color=color)
+    file = discord.File(filename)
+    embedVar.add_field(name="Is Corey Hecking Alive?", value=result, inline=False)
+    embedVar.add_field(name="mobile",value=corey_member.mobile_status, inline=True)
+    embedVar.add_field(name="pc",value=corey_member.desktop_status, inline=True)
+    embedVar.set_image(url="attachment://" + filename)
+    await ctx.send(embed=embedVar, file=file)
 
 @bot.command()
 async def getid(ctx, member: Member):
     await ctx.send(f"Your id is {ctx.author.id}")
     await ctx.send(f"{member.mention}'s id is {member.id}")
 
-@bot.command(name='quotey', help='spits out random quotes')
+@bot.command(name='8ball', help='spits out random 8 ball phrases')
 async def quotes(ctx):
-    some_quotes_list = ['1','2','3'
-            ]
-    response = random.choice(some_quotes_list)
+    some_quotes_list = ['yes','no','maybe','roll again']
+    response = "8 ball says: " + random.choice(some_quotes_list)
     await ctx.send(response)
 
 bot.run(os.getenv('TOKEN'),bot=False)
