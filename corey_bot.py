@@ -84,12 +84,13 @@ async def corey_quotes(ctx):
     await ctx.send(response)
 
 @bot.command(name='coreywrite', help='submits a corey quote')
-async def write_quote(ctx, arg):
+async def write_quote(ctx, *args):
     #load the json file and a python object
-
+    
+    inputMessage = ' '.join([str(word) for word in args])
     with open('data.json') as openfile_json:
         openfile_python = json.load(openfile_json)
-    entry = {"quote":str(arg),"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
+    entry = {"quote":inputMessage,"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
     openfile_python.append(entry)
     with open('data.json', mode='w') as openfile_json2:
         openfile_json2.write(json.dumps(openfile_python))
