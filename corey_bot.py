@@ -5,6 +5,7 @@ from discord import Color
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 
@@ -41,19 +42,20 @@ async def fetchServerInfo(context):
             f'server channels: {len(guild.channels)}\n'
             f'server members: {guild.member_count}\n'
 )
-@bot.command(name='coreypic', help='fetch a pic of corey')
+@bot.command(name='coreypic', help='get a pic for a corey lick')
 async def corey_img(context):
     await context.send(file = discord.File('corey.png'))
 
 @bot.command(name='coreyolive', help='check if corey is online')
 async def coreyStatus(ctx):
-    corey_id = 139598054373195776
-    #corey_id = 225359460812455936
+    #corey_id = 139598054373195776 #my testing id
+    corey_id = 225359460812455936 #coreys id
     
     corey_member = ctx.guild.get_member(corey_id)
     corey_stat = corey_member.status
     result = ""
     filename = ''
+
     if str(corey_stat) == "offline":
         result = "corey ded"
         filename = "corey_slep.png"
@@ -62,6 +64,7 @@ async def coreyStatus(ctx):
         result = "!!!ALERT!!! COREY OLIVE"
         filename = "corey_online.png"
         color = Color.green()
+    
     embedVar = discord.Embed(title="COREY STATUS", color=color)
     file = discord.File(filename)
     embedVar.add_field(name="Is Corey Hecking Alive?", value=result, inline=False)
@@ -81,4 +84,4 @@ async def quotes(ctx):
     response = "8 ball says: " + random.choice(some_quotes_list)
     await ctx.send(response)
 
-bot.run(os.getenv('TOKEN'),bot=False)
+bot.run(os.getenv('COREY_TOKEN'))
