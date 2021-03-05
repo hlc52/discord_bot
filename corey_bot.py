@@ -73,6 +73,29 @@ async def coreyStatus(ctx):
     embedVar.set_image(url="attachment://" + filename)
     await ctx.send(embed=embedVar, file=file)
 
+@bot.command(name='coreywow', help='fetches a corey quote')
+async def corey_quotes(ctx):
+    #load the json file and a python object
+    with open('data.json') as openfile_json:
+        openfile_python = json.load(openfile_json)
+    #get entry
+    randomEntry = random.choice(openfile_python)
+    response = f'"{randomEntry["quote"]}" submitted by {randomEntry["author"]} on {randomEntry["timestamp"]}'
+    await ctx.send(response)
+
+@bot.command(name='coreywrite', help='submits a corey quote')
+async def write_quote(ctx, arg):
+    #load the json file and a python object
+
+    with open('data.json') as openfile_json:
+        openfile_python = json.load(openfile_json)
+    entry = {"quote":str(arg),"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
+    openfile_python.append(entry)
+    with open('data.json', mode='w') as openfile_json2:
+        openfile_json2.write(json.dumps(openfile_python))
+    
+    await ctx.send("submitted")
+
 @bot.command()
 async def getid(ctx, member: Member):
     await ctx.send(f"Your id is {ctx.author.id}")
