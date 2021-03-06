@@ -53,8 +53,6 @@ async def coreyStatus(ctx):
     
     corey_member = ctx.guild.get_member(corey_id)
     corey_stat = corey_member.status
-    result = ""
-    filename = ''
 
     if str(corey_stat) == "offline":
         result = "corey ded"
@@ -68,14 +66,13 @@ async def coreyStatus(ctx):
     embedVar = discord.Embed(title="COREY STATUS", color=color)
     file = discord.File(filename)
     embedVar.add_field(name="Is Corey Hecking Alive?", value=result, inline=False)
-    embedVar.add_field(name="mobile",value=corey_member.mobile_status, inline=True)
-    embedVar.add_field(name="pc",value=corey_member.desktop_status, inline=True)
     embedVar.set_image(url="attachment://" + filename)
     await ctx.send(embed=embedVar, file=file)
 
 @bot.command(name='coreywow', help='fetches a corey quote')
 async def corey_quotes(ctx):
     openingList = ["corey would never admit it but he once said", "the following words of wisdom were sponsored by corey", "life got you down? this is what corey has to say about that", "straight out of corey’s mouth and into our hearts", "as corey once said", "straight out of corey’s mouth", "if you can believe it, corey once told us", "corey", "guess who once said", ";) you know who said", "all hail our wise supreme leader, who once declared", "corey once said", "a wise corey once said"]
+    
     #load the json file and a python object
     with open('data.json') as openfile_json:
         openfile_python = json.load(openfile_json)
