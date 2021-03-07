@@ -80,7 +80,11 @@ async def corey_quotes(ctx):
     randomEntry = random.choice(openfile_python)
     randomOpener = random.choice(openingList)
     response = f'{randomOpener}: "{randomEntry["quote"]}" submitted by {randomEntry["author"]} on {randomEntry["timestamp"]}'
-    await ctx.send(response)
+    color = Color.blue() 
+    embedVar = discord.Embed(title=randomOpener + ":", color=color)
+    embedVar.add_field(name=randomEntry["quote"], value="submitted by: " + randomEntry["author"], inline=False)
+    await ctx.send(embed=embedVar)
+    #await ctx.send(response)
 
 @bot.command(name='coreywrite', help='submits a corey quote')
 async def write_quote(ctx, *args):
