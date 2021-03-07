@@ -111,4 +111,9 @@ async def quotes(ctx):
     response = "8 ball says: " + random.choice(some_quotes_list)
     await ctx.send(response)
 
+@bot.command(name='shutdown', help='shuts down bot, for testing only')
+async def shutdown(ctx):
+    await ctx.send("shutting down")
+    await ctx.bot.logout()
+
 bot.run(os.getenv('COREY_TOKEN'))
