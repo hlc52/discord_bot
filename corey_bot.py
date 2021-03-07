@@ -71,7 +71,7 @@ async def coreyStatus(ctx):
 
 @bot.command(name='coreywow', help='fetches a corey quote')
 async def corey_quotes(ctx):
-    openingList = ["corey would never admit it but he once said", "the following words of wisdom were sponsored by corey", "life got you down? this is what corey has to say about that", "straight out of corey’s mouth and into our hearts", "as corey once said", "straight out of corey’s mouth", "if you can believe it, corey once told us", "corey", "guess who once said", ";) you know who said", "all hail our wise supreme leader, who once declared", "corey once said", "a wise corey once said"]
+    openingList = ["corey's mighty lips once spat out", "corey would never admit it but he once said", "the following words of wisdom were sponsored by corey", "you'd think it'd be illegal, but corey once spoke these words", "life got you down? this is what corey has to say about that", "straight out of corey’s mouth and into our hearts", "as corey once said", "straight out of corey’s mouth", "if you can believe it, corey once told us", "corey", "guess who once said", ";) you know who said", "all hail our wise supreme leader, who once declared", "corey once said", "a wise corey once said", "when caught between a rock and a hard on, corey will tell you", "gentle whispers from our bae", "in the heat of passion corey blurted", "in a sleepless post-raid stupor, he mumbled", "inbetween bites of fried chicken, corey garbled"]
     
     #load the json file and a python object
     with open('data.json') as openfile_json:
