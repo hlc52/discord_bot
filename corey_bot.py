@@ -44,7 +44,8 @@ async def fetchServerInfo(context):
 )
 @bot.command(name='coreypic', help='get a pic for a corey lick')
 async def corey_img(context):
-    await context.send(file = discord.File('corey.png'))
+    listOfCoreyPics = ['corey.png','corey_slep2.png','corey_slep_michigan.png','corey_slep.png','corey_slep3.png']
+    await context.send(file = discord.File(random.choice(listOfCoreyPics)))
 
 @bot.command(name='coreyolive', help='check if corey is online')
 async def coreyStatus(ctx):
