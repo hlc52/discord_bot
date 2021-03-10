@@ -2,10 +2,13 @@ import discord
 import random
 from discord import Member
 from discord import Color
-from discord.ext import commands
+from discord.ext import tasks, commands
 from dotenv import load_dotenv
 import os
 import json
+
+from datetime import datetime
+from pytz import timezone
 
 load_dotenv()
 
@@ -14,6 +17,21 @@ intents.members = True
 intents.presences = True #you need this bc the member cache won't update w/o it. the cache would only cache at start of bot and status won't update
 prefix = "$"
 bot = commands.Bot(command_prefix=prefix, intents=intents)
+
+def external_coreywow():
+    openingList = ["corey's mighty lips once spat out", "corey would never admit it but he once said", "the following words of wisdom were sponsored by corey", "you'd think it'd be illegal, but corey once spoke these words", "life got you down? this is what corey has to say about that", "straight out of corey’s mouth and into our hearts", "as corey once said", "straight out of corey’s mouth", "if you can believe it, corey once told us", "corey", "guess who once said", ";) you know who said", "all hail our wise supreme leader, who once declared", "corey once said", "a wise corey once said", "when caught between a rock and a hard place, corey will tell you", "gentle whispers from our bae", "in the heat of passion corey blurted", "in a sleepless post-raid stupor, he mumbled", "inbetween bites of fried chicken, corey garbled"]
+
+    #load the json file and a python object
+    with open('data.json') as openfile_json:
+        openfile_python = json.load(openfile_json)
+    #get entry
+    randomEntry = random.choice(openfile_python)
+    randomOpener = random.choice(openingList)
+    response = f'{randomOpener}: "{randomEntry["quote"]}" submitted by {randomEntry["author"]} on {randomEntry["timestamp"]}'
+    color = Color.blue()
+    embedVar = discord.Embed(title=randomOpener + ":", color=color)
+    embedVar.add_field(name=randomEntry["quote"], value="submitted by: " + randomEntry["author"], inline=False)
+    return embedVar
 
 @bot.event
 async def on_ready():
@@ -32,6 +50,7 @@ async def on_ready():
 
     guild = discord.utils.get(bot.guilds, name='Chicken')
     print(guild.name)
+    counter.start()
 
 @bot.command(name='server', help='get server stats')
 async def fetchServerInfo(context):
@@ -44,7 +63,8 @@ async def fetchServerInfo(context):
 )
 @bot.command(name='coreypic', help='get a pic for a corey lick')
 async def corey_img(context):
-    await context.send(file = discord.File('corey.png'))
+    listOfCoreyPics = ['corey.png','corey_slep2.png','corey_slep_michigan.png','corey_slep.png','corey_slep3.png']
+    await context.send(file = discord.File(random.choice(listOfCoreyPics)))
 
 @bot.command(name='coreyolive', help='check if corey is online')
 async def coreyStatus(ctx):
@@ -53,8 +73,6 @@ async def coreyStatus(ctx):
     
     corey_member = ctx.guild.get_member(corey_id)
     corey_stat = corey_member.status
-    result = ""
-    filename = ''
 
     if str(corey_stat) == "offline":
         result = "corey ded"
@@ -68,28 +86,21 @@ async def coreyStatus(ctx):
     embedVar = discord.Embed(title="COREY STATUS", color=color)
     file = discord.File(filename)
     embedVar.add_field(name="Is Corey Hecking Alive?", value=result, inline=False)
-    embedVar.add_field(name="mobile",value=corey_member.mobile_status, inline=True)
-    embedVar.add_field(name="pc",value=corey_member.desktop_status, inline=True)
     embedVar.set_image(url="attachment://" + filename)
     await ctx.send(embed=embedVar, file=file)
 
 @bot.command(name='coreywow', help='fetches a corey quote')
 async def corey_quotes(ctx):
-    #load the json file and a python object
-    with open('data.json') as openfile_json:
-        openfile_python = json.load(openfile_json)
-    #get entry
-    randomEntry = random.choice(openfile_python)
-    response = f'"{randomEntry["quote"]}" submitted by {randomEntry["author"]} on {randomEntry["timestamp"]}'
-    await ctx.send(response)
+    await ctx.send(embed=external_coreywow())
 
 @bot.command(name='coreywrite', help='submits a corey quote')
-async def write_quote(ctx, arg):
+async def write_quote(ctx, *args):
     #load the json file and a python object
 
+    inputMessage = ' '.join([str(word) for word in args])
     with open('data.json') as openfile_json:
         openfile_python = json.load(openfile_json)
-    entry = {"quote":str(arg),"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
+    entry = {"quote":inputMessage,"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
     openfile_python.append(entry)
     with open('data.json', mode='w') as openfile_json2:
         openfile_json2.write(json.dumps(openfile_python))
@@ -106,5 +117,21 @@ async def quotes(ctx):
     some_quotes_list = ['yes','no','maybe','roll again']
     response = "8 ball says: " + random.choice(some_quotes_list)
     await ctx.send(response)
+
+@tasks.loop(hours=1)
+async def counter():
+    chat_is_lava = bot.get_channel(707411086642511872)
+    hot_garbage = bot.get_channel(432003606670213123)
+    est = timezone('US/Eastern')
+    local_time = datetime.now(est)
+    current_hour = local_time.hour
+    if current_hour == 9:
+        await chat_is_lava.send('Here is your daily dosage of Corey', embed=external_coreywow())
+        await hot_garbage.send('Here is your daily dosage of Corey', embed=external_coreywow())
+
+@bot.command(name='shutdown', help='shuts down bot, for testing only')
+async def shutdown(ctx):
+    await ctx.send("shutting down")
+    await ctx.bot.logout()
 
 bot.run(os.getenv('COREY_TOKEN'))
