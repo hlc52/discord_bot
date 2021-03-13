@@ -29,9 +29,9 @@ def external_coreywow():
     randomOpener = random.choice(openingList)
     response = f'{randomOpener}: "{randomEntry["quote"]}" submitted by {randomEntry["author"]} on {randomEntry["timestamp"]}'
     color = Color.blue()
-    embedVar = discord.Embed(title=randomOpener + ":", color=color)
-    embedVar.add_field(name=randomEntry["quote"], value="submitted by: " + randomEntry["author"], inline=False)
-    embedVar.set_footer(text="Submitted on " + str(randomEntry["timestamp"]))
+    embedVar = discord.Embed(title=randomOpener + ":", description=randomEntry["quote"],  color=color)
+    #embedVar.add_field(name=randomEntry["quote"], value="submitted by: " + randomEntry["author"], inline=False)
+    embedVar.set_footer(text="submitted by: " + randomEntry["author"] + " on " + str(randomEntry["timestamp"]))
     return embedVar
 
 @bot.event
