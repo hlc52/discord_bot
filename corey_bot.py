@@ -31,6 +31,7 @@ def external_coreywow():
     color = Color.blue()
     embedVar = discord.Embed(title=randomOpener + ":", color=color)
     embedVar.add_field(name=randomEntry["quote"], value="submitted by: " + randomEntry["author"], inline=False)
+    embedVar.set_footer(text="Submitted on " + str(randomEntry["timestamp"]))
     return embedVar
 
 @bot.event
@@ -100,7 +101,7 @@ async def write_quote(ctx, *args):
     inputMessage = ' '.join([str(word) for word in args])
     with open('data.json') as openfile_json:
         openfile_python = json.load(openfile_json)
-    entry = {"quote":inputMessage,"author":ctx.author.name,"timestamp":str(ctx.message.created_at)}
+    entry = {"quote":inputMessage,"author":ctx.author.name,"timestamp":str(ctx.message.created_at.date())}
     openfile_python.append(entry)
     with open('data.json', mode='w') as openfile_json2:
         openfile_json2.write(json.dumps(openfile_python))
